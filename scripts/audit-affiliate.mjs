@@ -16,16 +16,16 @@ const { SITE, CATEGORY_LINKS, COLLECTION_LINKS, DEFAULT_AFFILIATE_URL } = await 
 const { resolveAffiliate, allMappingEntries } = await import(pathToFileURL(join(ROOT, 'lib/affiliate.js')).href);
 const manifest = await import(pathToFileURL(join(ROOT, 'lib/manifest.js')).href);
 
-// 1. Mapping fixtures: the exact URLs supplied in the project input (Section 1.2).
+// 1. Mapping fixtures: the authoritative URLs supplied by the owner (2026-10-14).
 const SUPPLIED = {
   'category:laser-cleaning-machines': 'https://sfxlasertech.com/collections/laser-cleaning-machine?ref=hppfdpph',
-  'category:laser-welding-machines': 'https://sfxlasertech.com/collections/fiber-laser-welding-machine?ref=hppfdpph',
-  'category:laser-marking-engraving': 'https://sfxlasertech.com/collections/fiber-laser-making-machine?ref=hppfdpph',
+  'category:laser-welding-machines': 'https://sfxlasertech.com/collections/laser-welding-machine?ref=hppfdpph',
+  'category:laser-marking-engraving': 'https://sfxlasertech.com/collections/fiber-laser-marking-machine?ref=hppfdpph',
   'category:fiber-laser-cutters': 'https://sfxlasertech.com/collections/fiber-laser-cutting-machine?ref=hppfdpph',
   'category:machine-tool-accessories': 'https://sfxlasertech.com/collections/machine-tool-accessories?ref=hppfdpph',
   'category:all-laser-equipment': 'https://sfxlasertech.com/collections/all?ref=hppfdpph',
-  'collection:air-cooled-pulse-cleaners': 'https://sfxlasertech.com/collections/pulse-laser-cleaning-machine?ref=hppfdpph',
-  'collection:handheld-welder-cleaners': 'https://sfxlasertech.com/collections/frontpage?ref=hppfdpph',
+  'collection:air-cooled-pulse-cleaners': 'https://sfxlasertech.com/collections/laser-cleaning-machine?ref=hppfdpph',
+  'collection:handheld-welder-cleaners': 'https://sfxlasertech.com/collections/laser-welding-machine?ref=hppfdpph',
   'default:default': 'https://sfxlasertech.com/?ref=hppfdpph',
 };
 const entries = allMappingEntries();
@@ -40,6 +40,41 @@ check('default URL unchanged', DEFAULT_AFFILIATE_URL === SUPPLIED['default:defau
 check('missing key fails safely', resolveAffiliate({ kind: 'category', id: 'nope' }).url === null);
 check('cross-table lookup blocked', resolveAffiliate({ kind: 'collection', id: 'laser-cleaning-machines' }).url === null);
 check('unsafe kind blocked', resolveAffiliate({ kind: 'javascript', id: 'x' }).url === null);
+
+// 1b. Repository-wide: retired handles must not exist; every outbound merchant URL keeps ref=hppfdpph once.
+const RETIRED = [
+  ['fiber-laser-welding', '-machine'],
+  ['fiber-laser-making', '-machine'],
+  ['pulse-laser-cleaning', '-machine'],
+  ['collections/', 'frontpage'],
+].map((p) => p.join(''));
+function walkAll(dir, out = []) {
+  for (const name of readdirSync(dir)) {
+    if (['node_modules', '.next', '.git', 'package-lock.json'].includes(name)) continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walkAll(p, out);
+    else if (['.js', '.jsx', '.mjs', '.json', '.md', '.css', '.svg'].includes(extname(p))) out.push(p);
+  }
+  return out;
+}
+const everyFile = walkAll(ROOT);
+const retiredHits = [];
+const noRef = [];
+for (const f of everyFile) {
+  const src = readFileSync(f, 'utf8');
+  for (const slug of RETIRED) if (src.includes(slug)) retiredHits.push(`${relative(ROOT, f)}: ${slug}`);
+  for (const url of src.match(/https:\/\/sfxlasertech\.com\/[^\s'"`)<>]*/g) || []) {
+    if (url.startsWith('https://sfxlasertech.com/cdn/')) continue; // image assets, not affiliate links
+    if (url.includes('${')) continue;
+    if ((url.match(/[?&]ref=hppfdpph(?![\w])/g) || []).length !== 1) noRef.push(`${relative(ROOT, f)}: ${url}`);
+  }
+}
+check('no retired/misspelled handles anywhere in the repository', retiredHits.length === 0, retiredHits.join(' | '));
+check('every outbound merchant URL has exactly one ref=hppfdpph', noRef.length === 0, noRef.join(' | '));
+{
+  const urls = allMappingEntries().map((e) => e.url);
+  check('all mapped URLs are real merchant collection/home URLs with ref', urls.every((u) => /^https:\/\/sfxlasertech\.com\/(collections\/[a-z0-9-]+)?\?ref=hppfdpph$/.test(u)));
+}
 
 // 2. Manifest destinations all resolve; images are https merchant URLs.
 const dests = [

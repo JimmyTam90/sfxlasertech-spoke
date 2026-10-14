@@ -48,36 +48,33 @@ The supplied configuration was a bare fragment; it is wrapped in a `rewrites` ar
 
 ## Configuration summary (Section 2)
 
-- **Confirmed inputs:** all of Section 1 was used as supplied. Affiliate URLs are byte-for-byte as supplied (checked by `audit:affiliate`).
+- **Confirmed inputs:** all of Section 1 was used as supplied. Affiliate URLs match the owner's authoritative mapping (checked by `audit:affiliate`).
 - **Missing inputs:** GA4 ID, Google Ads ID/label, Meta Pixel ID are placeholders, so those integrations are off. PrimeGearLab logo file not supplied.
 - **Conflicts / issues recorded:**
   1. `BRAND_LOGO_PATH` (`/sfx-laser-tech/logo.png`) does not exist, and `BRAND_LOGO_URL` is the **merchant's** logo, not PrimeGearLab's. The header uses a plain text monogram fallback beside the brand name. Drop a real logo in and swap `components/Logo.jsx`.
   2. `REPOSITORY_CONSTRAINTS` requires `tailwindcss`, `postcss`, `autoprefixer` in `dependencies`. Followed (Section 5.2 says not to force this on every project; here it is an explicit input and does no harm).
-  3. Three supplied destination URLs did not load during research (next section).
+  3. Three earlier destination handles did not load; they were replaced by the authoritative mapping below.
   4. `OFFER_CANDIDATES` such as "factory-direct pricing" and "California & New York support centers" could not be verified. They are **not** stated as facts. The page only repeats what the merchant's own site states, and says so.
 
-## Destination evidence (observed 2026-10-13)
+## Destination mapping (authoritative, supplied 2026-10-14)
 
-Syntax validity of a URL does not prove the page exists or that commission attribution works. All destinations are `DESTINATION_NOT_RUNTIME_VERIFIED` in code.
+All URLs live in `lib/config.js` only and keep `?ref=hppfdpph`. Each was fetched on 2026-10-14 and loaded as a real merchant page. That proves the page exists, not that commission attribution works, so every destination stays `DESTINATION_NOT_RUNTIME_VERIFIED` in code.
 
-| Key | Supplied handle | Research result |
+| Key(s) | URL handle | Merchant page |
 | --- | --- | --- |
-| category: laser-cleaning-machines | `laser-cleaning-machine` | Loaded, "Laser Cleaning Machine", 14 products |
-| category: laser-welding-machines | `fiber-laser-welding-machine` | **Failed to fetch** (with and without `ref`). Merchant nav uses `laser-welding-machine`, which loaded (23 products) |
-| category: laser-marking-engraving | `fiber-laser-making-machine` | **Failed to fetch**. Likely typo of "marking". `fiber-laser-marking-machine` loads but is titled "JPT LP+" (3 products) |
-| category: fiber-laser-cutters | `fiber-laser-cutting-machine` | Loaded, 9 products |
-| category: machine-tool-accessories | `machine-tool-accessories` | Loaded, 2 products |
-| category: all-laser-equipment | `all` | Loaded, 118 products |
-| collection: air-cooled-pulse-cleaners | `pulse-laser-cleaning-machine` | **Failed to fetch** (with and without `ref`) |
-| collection: handheld-welder-cleaners | `frontpage` | Loads, but is the merchant "frontpage" list (33 mixed products), not handheld welders only |
+| category: laser-cleaning-machines; collection: air-cooled-pulse-cleaners | `collections/laser-cleaning-machine` | "Laser Cleaning Machine", 14 products |
+| category: laser-welding-machines; collection: handheld-welder-cleaners | `collections/laser-welding-machine` | "Laser Welding Machine", 23 products |
+| category: laser-marking-engraving | `collections/fiber-laser-marking-machine` | "JPT LP+", 3 products |
+| category: fiber-laser-cutters | `collections/fiber-laser-cutting-machine` | "Fiber Laser Cutting Machine", 9 products |
+| category: machine-tool-accessories | `collections/machine-tool-accessories` | "Machine Tool Accessories", 2 products |
+| category: all-laser-equipment | `collections/all` | "Products", 118 products |
+| default | `/` (homepage) | loads |
 
-A failed fetch is not proof of a 404, but the three failures are consistent with handles that do not exist on the merchant's store. **They were kept exactly as supplied** (Section 2: no silent changes to affiliate URLs). Suggested fixes, to apply only if you confirm them:
+Notes:
 
-- `laser-welding-machines` → `https://sfxlasertech.com/collections/laser-welding-machine?ref=hppfdpph`
-- `laser-marking-engraving` → confirm the right marking collection handle with the merchant (the merchant nav also lists `portable-laser-marking-machine`, `jpt-mopa-m7`)
-- `air-cooled-pulse-cleaners` → no loading pulse-only handle was found; `laser-cleaning-machine` loads and contains the pulse cleaners
-
-Edit `lib/config.js` only; no component builds URLs.
+- The merchant has no pulse-only or handheld-only collection, so those two collection keys reuse the cleaning and welding URLs. Their button labels say so.
+- The marking collection holds only three models (50W JPT and portable 20W/30W/50W). JPT MOPA M7 models are in the full catalog, so the M7 card and selector result link to `collections/all`.
+- `npm run audit:affiliate` fails if an outbound merchant URL lacks a single `ref=hppfdpph`, or if any retired handle from the earlier mapping reappears.
 
 ## Data integrity
 
@@ -110,7 +107,7 @@ Edit `lib/config.js` only; no component builds URLs.
 | Rendered-HTML / DOM audit | NOT_EXECUTED | `scripts/audit-rendered.mjs` is ready; needs a running build |
 | Mobile/desktop layout, console errors | NOT_EXECUTED | Needs a running build and a browser |
 | Merchant image loading | NOT_EXECUTED | Merchant host unreachable from the sandbox shell |
-| Destination availability | PARTIAL | See table above; 3 of 8 supplied handles failed to load |
+| Destination availability | PASS (page loads) | All 7 mapped URLs fetched with `ref` on 2026-10-14; this is not attribution proof |
 | Hub–Spoke routing | NOT_EXECUTED | Needs both deployments |
 | Affiliate attribution / commission | NOT_EXECUTED | Needs a real click-through and the merchant's dashboard |
 
