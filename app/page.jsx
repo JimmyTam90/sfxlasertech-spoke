@@ -2,7 +2,6 @@ import Link from 'next/link';
 import AffiliateLink from '@/components/AffiliateLink';
 import Card from '@/components/Card';
 import Selector from '@/components/Selector';
-import ProductImage from '@/components/ProductImage';
 import { CATEGORIES, COLLECTIONS, MODELS, APPLICATIONS, FAQ } from '@/lib/manifest';
 import { SITE } from '@/lib/config';
 
@@ -66,11 +65,19 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/60">
-            <div className="relative aspect-[4/3] w-full bg-white">
-              <ProductImage src={heroModel.image.src} alt={heroModel.image.alt} priority sizes="(min-width: 1024px) 40vw, 100vw" />
-            </div>
-            <dl className="spec-grid p-5">
+          {/* Hero model block: same Card, so the order is Image → Title → Specs/Certifications → CTA */}
+          <Card
+            item={{ ...heroModel, description: heroModel.use }}
+            placement="hero_model"
+            headingLevel="h2"
+            priority
+            sizes="(min-width: 1024px) 40vw, 100vw"
+          >
+            <dl className="spec-grid">
+              <dt className="font-medium text-slate-400">Power</dt>
+              <dd className="text-slate-100">{heroModel.power || 'See merchant page'}</dd>
+              <dt className="font-medium text-slate-400">Cooling</dt>
+              <dd className="text-slate-100">{heroModel.cooling || 'See merchant page'}</dd>
               {MERCHANT_STATED.map((row) => (
                 <div key={row.label} className="contents">
                   <dt className="font-medium text-slate-400">{row.label}</dt>
@@ -78,10 +85,10 @@ export default function HomePage() {
                 </div>
               ))}
             </dl>
-            <p className="border-t border-slate-700 px-5 py-3 text-xs text-slate-400">
-              Stated on the merchant’s website, observed {SITE.lastUpdated}. Not independently verified.
+            <p className="text-xs text-slate-400">
+              Certifications, service and shipping are stated on the merchant’s website, observed {SITE.lastUpdated}. Not independently verified.
             </p>
-          </div>
+          </Card>
         </div>
       </section>
 

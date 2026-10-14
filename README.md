@@ -24,6 +24,7 @@ Optional analytics: copy `.env.example` values into Vercel project settings. Emp
 | Affiliate resolver | `lib/affiliate.js`: exact keys only, no fuzzy match, no cross-table fallback, fails safely |
 | Affiliate anchor | `components/AffiliateLink.jsx`: the only place an external affiliate `<a>` is rendered |
 | CTA contract | real `<a>`, `target="_blank"`, `rel="noopener noreferrer"`, no click handler, renders nothing when no valid URL |
+| Card layout | `components/Card.jsx` is the only card (categories, collections, featured models, hero model). Fixed DOM order Image → Title → Details/Specs → CTA on mobile and desktop; the audit fails if it changes |
 | Click measurement | `components/Analytics.jsx` listener (never cancels navigation) + `app/api/track-click/route.js` |
 | Public URL strategy | `basePath: '/sfx-laser-tech'`, no `assetPrefix`, `trailingSlash: false` |
 | Canonical / sitemap | absolute `https://primegearlab.com/sfx-laser-tech/...` via `lib/seo.js`, `app/sitemap.js` |

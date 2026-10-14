@@ -99,6 +99,16 @@ check('AffiliateLink renders nothing without a valid URL', /if \(!url\)[\s\S]*re
 const affiliateAnchors = files.filter((f) => rel(f) !== 'components/AffiliateLink.jsx').filter((f) => /<a\b[^>]*href=\{[^}]*(url|Url|affiliate)/.test(readFileSync(f, 'utf8')));
 check('no affiliate anchors outside AffiliateLink', affiliateAnchors.length === 0, affiliateAnchors.map(rel).join(', '));
 
+// Card layout order: Image -> Title -> Details/Specs -> CTA (single shared Card component).
+const card = readFileSync(join(ROOT, 'components/Card.jsx'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+const slot = (n) => card.indexOf(`data-card-slot="${n}"`);
+check('Card slots in order image < title < details < cta', slot('image') > -1 && slot('image') < slot('title') && slot('title') < slot('details') && slot('details') < slot('cta'));
+check('Card: image is the first element rendered', card.indexOf('<article') < slot('image') && !/<article[^>]*>\s*<(?!div data-card-slot="image")/.test(card));
+check('Card: CTA is the last element before the card closes', /data-card-slot="cta"[\s\S]*<\/AffiliateLink>\s*<\/div>\s*<\/div>\s*<\/article>/.test(card));
+check('Card: no order-*/reverse/absolute layout tricks', !/\border-\d|\border-(first|last)|flex-(col|row)-reverse|\babsolute\b/.test(card));
+const page = readFileSync(join(ROOT, 'app/page.jsx'), 'utf8');
+check('home page has no hand-built image blocks (all cards use <Card>)', !/<ProductImage/.test(page));
+
 const analytics = readFileSync(join(ROOT, 'components/Analytics.jsx'), 'utf8');
 check('analytics listener never calls preventDefault', !/preventDefault/.test(analytics));
 
