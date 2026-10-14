@@ -49,9 +49,9 @@ The supplied configuration was a bare fragment; it is wrapped in a `rewrites` ar
 ## Configuration summary (Section 2)
 
 - **Confirmed inputs:** all of Section 1 was used as supplied. Affiliate URLs match the owner's authoritative mapping (checked by `audit:affiliate`).
-- **Missing inputs:** GA4 ID, Google Ads ID/label, Meta Pixel ID are placeholders, so those integrations are off. PrimeGearLab logo file not supplied.
+- **Missing inputs:** GA4 ID, Google Ads ID/label, Meta Pixel ID are placeholders, so those integrations are off.
 - **Conflicts / issues recorded:**
-  1. `BRAND_LOGO_PATH` (`/sfx-laser-tech/logo.png`) does not exist, and `BRAND_LOGO_URL` is the **merchant's** logo, not PrimeGearLab's. The header uses a plain text monogram fallback beside the brand name. Drop a real logo in and swap `components/Logo.jsx`.
+  1. The official PrimeGearLab logo is `public/logo.png` (served at `/sfx-laser-tech/logo.png` through `basePath`; do not nest it in `public/sfx-laser-tech/`). It is the supplied artwork with the empty transparent margin cropped and scaled to 400 px wide. The untouched original is kept at `brand/logo-original.png`. `BRAND_LOGO_URL` in the input is the **merchant's** logo and is not used.
   2. `REPOSITORY_CONSTRAINTS` requires `tailwindcss`, `postcss`, `autoprefixer` in `dependencies`. Followed (Section 5.2 says not to force this on every project; here it is an explicit input and does no harm).
   3. Three earlier destination handles did not load; they were replaced by the authoritative mapping below.
   4. `OFFER_CANDIDATES` such as "factory-direct pricing" and "California & New York support centers" could not be verified. They are **not** stated as facts. The page only repeats what the merchant's own site states, and says so.

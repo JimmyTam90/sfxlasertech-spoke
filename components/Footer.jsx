@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="border-t border-slate-700/60 bg-slate-950">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.5fr,1fr,1fr]">
         <div className="space-y-3">
-          <Logo />
+          <Logo size="footer" />
           <p className="max-w-sm text-sm text-slate-400">
             {SITE.brandName} is an independent guide to industrial laser equipment. We are not the
             manufacturer or the seller. Purchases happen on the merchant’s own website.

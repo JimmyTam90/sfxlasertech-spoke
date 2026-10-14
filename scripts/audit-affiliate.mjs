@@ -154,7 +154,16 @@ for (const p of ['app/privacy-policy/page.jsx', 'app/terms-of-service/page.jsx',
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 check('next pinned to 14.2.35', pkg.dependencies.next === '14.2.35');
 for (const d of ['tailwindcss', 'postcss', 'autoprefixer']) check(`${d} in dependencies (REPOSITORY_CONSTRAINTS)`, Boolean(pkg.dependencies[d]));
-check('no logo asset referenced that does not exist', !/logo\.png/.test(files.map((f) => readFileSync(f, 'utf8')).join('\n').replace(/lib\/config\.js/g, '')));
+{
+  const logoSrc = readFileSync(join(ROOT, 'components/Logo.jsx'), 'utf8');
+  check('logo file exists at public/logo.png (served at /sfx-laser-tech/logo.png via basePath)', existsSync(join(ROOT, 'public/logo.png')));
+  check('logo is not nested in public/sfx-laser-tech (would double the basePath)', !existsSync(join(ROOT, 'public/sfx-laser-tech')));
+  check('Logo renders the image with the required alt text', SITE.logo.alt === 'PrimeGearLab Logo' && /alt=\{alt\}/.test(logoSrc) && /<img\b/.test(logoSrc) && /SITE\.basePath/.test(logoSrc));
+  check('Logo: no text-badge fallback left', !/>\s*PG\s*</.test(logoSrc));
+  check('Logo has width/height attributes (no layout shift) and aspect-preserving w-auto', /width=\{/.test(logoSrc) && /height=\{/.test(logoSrc) && /w-auto/.test(logoSrc));
+  check('Header and Footer both use <Logo>', /<Logo\b/.test(readFileSync(join(ROOT, 'components/Header.jsx'), 'utf8')) && /<Logo\b/.test(readFileSync(join(ROOT, 'components/Footer.jsx'), 'utf8')));
+  check('brand master file kept', existsSync(join(ROOT, 'brand/logo-original.png')));
+}
 
 let failed = 0;
 for (const r of results) {
