@@ -159,6 +159,7 @@ check('home page has no hand-built image blocks (all cards use <Card>)', !/<Prod
   check('openGraph.images and twitter.images both set from OG_IMAGE', (seoSrc.match(/images:\s*\[\{ url: OG_IMAGE\.url/g) || []).length === 2);
   const footer = read('components/Footer.jsx');
   check('footer: legal links right-aligned, text block max-w-xl ml-auto, left-aligned, no text-right', /justify-end/.test(footer) && /max-w-xl/.test(footer) && /md:ml-auto/.test(footer) && /text-left/.test(footer) && !/text-right/.test(footer));
+  check('footer: compact (py-8, no stacked mt-8 gap), logo left / links right / text block right', /py-8/.test(footer) && !/py-1[0-9]|py-12|mt-8|mt-10/.test(footer) && /md:grid-cols-\[auto,1fr\]/.test(footer));
   check('footer: disclaimer, email and copyright present', /affiliate links/.test(footer) && /mailto:/.test(footer) && /©/.test(footer));
   check('card image box: one fixed height, object-contain, no aspect-ratio box', /imageClassName = 'h-56'/.test(card) && !/aspect-/.test(card) && /object-contain/.test(read('components/ProductImage.jsx')));
   const hero = read('app/page.jsx');
