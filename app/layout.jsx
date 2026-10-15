@@ -8,6 +8,15 @@ import { pageMeta } from '@/lib/seo';
 
 export const metadata = {
   metadataBase: new URL(SITE.origin),
+  // Icons live in public/ and are served under the basePath through the Hub.
+  icons: {
+    icon: [
+      { url: `${SITE.basePath}${SITE.favicon.ico}`, sizes: 'any' },
+      { url: `${SITE.basePath}${SITE.favicon.png}`, type: 'image/png', sizes: '192x192' },
+    ],
+    shortcut: `${SITE.basePath}${SITE.favicon.ico}`,
+    apple: { url: `${SITE.basePath}${SITE.favicon.apple}`, sizes: '180x180' },
+  },
   ...pageMeta({
     title: `Industrial Laser Equipment Guide | ${SITE.brandName}`,
     description:

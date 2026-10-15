@@ -8,7 +8,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem; /* sticky header offset for in-page anchors */
+  scroll-padding-top: 6rem; /* sticky header (up to 5rem) offset for in-page anchors */
 }
 
 @media (prefers-reduced-motion: reduce) {

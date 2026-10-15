@@ -6,44 +6,42 @@ import { LEGAL_PAGES } from '@/lib/seo';
 export default function Footer() {
   return (
     <footer className="border-t border-slate-700/60 bg-slate-950">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.5fr,1fr,1fr]">
-        <div className="space-y-3">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        {/* Row 1: logo (left) and legal links (right-aligned) */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <Logo size="footer" />
-          <p className="max-w-sm text-sm text-slate-400">
-            {SITE.brandName} is an independent guide to industrial laser equipment. We are not the
-            manufacturer or the seller. Purchases happen on the merchant’s own website.
-          </p>
+          <nav aria-label="Legal" className="flex md:justify-end">
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm md:justify-end">
+              {LEGAL_PAGES.map((page) => (
+                <li key={page.path}>
+                  <Link href={page.path} className="text-slate-300 hover:text-brand-light">
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        <nav aria-label="Legal">
-          <h2 className="text-sm font-semibold text-white">Legal</h2>
-          <ul className="mt-3 space-y-2 text-sm">
-            {LEGAL_PAGES.map((page) => (
-              <li key={page.path}>
-                <Link href={page.path} className="text-slate-300 hover:text-brand-light">
-                  {page.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div>
-          <h2 className="text-sm font-semibold text-white">Contact</h2>
-          <p className="mt-3 text-sm">
+        {/* Row 2: disclaimer, email and copyright in one block, right side of the page, left-aligned text */}
+        <div className="mt-8 max-w-xl space-y-3 border-t border-slate-800 pt-6 text-left text-xs leading-relaxed text-slate-400 md:ml-auto">
+          <p>
+            {SITE.brandName} is an independent guide to industrial laser equipment. We are not the manufacturer or the
+            seller. Purchases happen on the merchant’s own website.
+          </p>
+          <p>
+            This website may contain affiliate links. We may earn a commission when you purchase through eligible links, at
+            no additional cost to you. Product names, images and specifications belong to {SITE.merchantName} and are shown
+            for reference only.
+          </p>
+          <p>
+            Contact:{' '}
             <a href={`mailto:${SITE.contactEmail}`} className="break-all text-slate-300 hover:text-brand-light">
               {SITE.contactEmail}
             </a>
           </p>
+          <p>© {new Date().getFullYear()} {SITE.brandName}. All rights reserved.</p>
         </div>
-      </div>
-
-      <div className="border-t border-slate-800">
-        <p className="mx-auto max-w-6xl px-4 py-5 text-xs leading-relaxed text-slate-400 sm:px-6">
-          This website may contain affiliate links. We may earn a commission when you purchase
-          through eligible links, at no additional cost to you. Product names, images and
-          specifications belong to {SITE.merchantName} and are shown for reference only. © {new Date().getFullYear()} {SITE.brandName}.
-        </p>
       </div>
     </footer>
   );

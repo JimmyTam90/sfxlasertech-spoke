@@ -5,11 +5,21 @@ import Selector from '@/components/Selector';
 import { CATEGORIES, COLLECTIONS, MODELS, APPLICATIONS, FAQ } from '@/lib/manifest';
 import { SITE } from '@/lib/config';
 
+const CERTIFICATIONS = 'CE, FDA, ISO9001, UKCA, SGS, RoHS';
+
+// Shown in the strip under the hero. All are statements made by the merchant, not verified by us.
 const MERCHANT_STATED = [
-  { label: 'Certifications listed', value: 'CE, FDA, ISO9001, UKCA, SGS, RoHS' },
-  { label: 'US after-sales', value: 'Two service centers (merchant statement)' },
-  { label: 'Shipping', value: 'Free shipping advertised; terms on merchant site' },
-  { label: 'Stock', value: 'Some listings are marked “US Stock”' },
+  { label: 'US after-sales', value: 'Two US service centers' },
+  { label: 'Shipping', value: 'Free shipping advertised' },
+  { label: 'Stock', value: 'Some listings marked “US Stock”' },
+  { label: 'Certifications', value: CERTIFICATIONS },
+];
+
+const QUICK_PICKS = [
+  { id: 'laser-cleaning-machines', label: 'Laser Cleaning' },
+  { id: 'laser-welding-machines', label: 'Laser Welding' },
+  { id: 'laser-marking-engraving', label: 'Marking & Engraving' },
+  { id: 'fiber-laser-cutters', label: 'Laser Cutting' },
 ];
 
 function SectionHeading({ id, eyebrow, title, children }) {
@@ -29,10 +39,10 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero: two columns of matching height (items-stretch, content centred in the text column) */}
       <section className="bg-blueprint border-b border-slate-800">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.1fr,0.9fr] lg:py-20">
-          <div>
+        <div className="mx-auto grid max-w-6xl items-stretch gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.05fr,0.95fr] lg:gap-12 lg:py-14">
+          <div className="flex flex-col justify-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-brand-light">
               Laser equipment for US workshops
             </p>
@@ -44,7 +54,7 @@ export default function HomePage() {
               machines by application. Browse a category or use the selector, then continue to the
               merchant to confirm specifications, pricing and availability.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <AffiliateLink
                 destination={{ kind: 'category', id: 'all-laser-equipment' }}
                 placement="hero"
@@ -63,6 +73,23 @@ export default function HomePage() {
                 Affiliate Disclosure
               </Link>
             </p>
+
+            <div className="mt-8 border-t border-slate-700/70 pt-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Shop by machine type</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {QUICK_PICKS.map((pick) => (
+                  <li key={pick.id}>
+                    <AffiliateLink
+                      destination={{ kind: 'category', id: pick.id }}
+                      placement="hero_quick_pick"
+                      className="inline-flex items-center rounded-full border border-slate-600 bg-slate-900/60 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-brand-light hover:text-white"
+                    >
+                      {pick.label}
+                    </AffiliateLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Hero model block: same Card, so the order is Image → Title → Specs/Certifications → CTA */}
@@ -71,6 +98,7 @@ export default function HomePage() {
             placement="hero_model"
             headingLevel="h2"
             priority
+            imageClassName="h-56 lg:h-64"
             sizes="(min-width: 1024px) 40vw, 100vw"
           >
             <dl className="spec-grid">
@@ -78,22 +106,35 @@ export default function HomePage() {
               <dd className="text-slate-100">{heroModel.power || 'See merchant page'}</dd>
               <dt className="font-medium text-slate-400">Cooling</dt>
               <dd className="text-slate-100">{heroModel.cooling || 'See merchant page'}</dd>
-              {MERCHANT_STATED.map((row) => (
-                <div key={row.label} className="contents">
-                  <dt className="font-medium text-slate-400">{row.label}</dt>
-                  <dd className="text-slate-100">{row.value}</dd>
-                </div>
-              ))}
+              <dt className="font-medium text-slate-400">Certifications</dt>
+              <dd className="text-slate-100">{CERTIFICATIONS}</dd>
             </dl>
             <p className="text-xs text-slate-400">
-              Certifications, service and shipping are stated on the merchant’s website, observed {SITE.lastUpdated}. Not independently verified.
+              Certifications are stated on the merchant’s website, observed {SITE.lastUpdated}. Not independently verified.
             </p>
           </Card>
         </div>
       </section>
 
+      {/* Merchant-stated facts */}
+      <section aria-label="Merchant-stated facts" className="border-b border-slate-800 bg-slate-900/60">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+          <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+            {MERCHANT_STATED.map((row) => (
+              <div key={row.label}>
+                <dt className="text-xs font-semibold uppercase tracking-widest text-brand-light">{row.label}</dt>
+                <dd className="mt-1 text-sm text-slate-100">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs text-slate-400">
+            Stated on the merchant’s website, observed {SITE.lastUpdated}. Not independently verified. Check terms with the merchant.
+          </p>
+        </div>
+      </section>
+
       {/* Categories */}
-      <section id="categories" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="categories-title">
+      <section id="categories" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16" aria-labelledby="categories-title">
         <SectionHeading id="categories-title" eyebrow="Categories" title="Browse by machine type">
           Each card opens the matching collection on the merchant’s site.
         </SectionHeading>
@@ -103,7 +144,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <h3 className="mt-14 text-xl font-semibold text-white">Popular collections</h3>
+        <h3 className="mt-12 text-xl font-semibold text-white">Popular collections</h3>
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           {COLLECTIONS.map((item) => (
             <Card key={item.id} item={item} placement="collection_card" />
@@ -112,8 +153,8 @@ export default function HomePage() {
       </section>
 
       {/* Models + comparison */}
-      <section id="models" className="scroll-mt-20 border-y border-slate-800 bg-slate-900/50" aria-labelledby="models-title">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <section id="models" className="scroll-mt-24 border-y border-slate-800 bg-slate-900/50" aria-labelledby="models-title">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHeading id="models-title" eyebrow="Featured models" title="Models worth a closer look">
             Specifications below are limited to what the merchant’s listing titles state. Prices, stock, optical cable length and
             warranty terms are not shown because they were not verified and change often.
@@ -164,7 +205,7 @@ export default function HomePage() {
       </section>
 
       {/* Selector */}
-      <section id="selector" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="selector-title">
+      <section id="selector" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16" aria-labelledby="selector-title">
         <SectionHeading id="selector-title" eyebrow="Fitment and power selector" title="Match a machine class to your workshop">
           Two quick questions point you at the right part of the merchant’s catalog.
         </SectionHeading>
@@ -174,8 +215,8 @@ export default function HomePage() {
       </section>
 
       {/* Applications */}
-      <section id="applications" className="scroll-mt-20 border-y border-slate-800 bg-slate-900/50" aria-labelledby="applications-title">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <section id="applications" className="scroll-mt-24 border-y border-slate-800 bg-slate-900/50" aria-labelledby="applications-title">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHeading id="applications-title" eyebrow="Applications" title="Laser application guides">
             General guidance for common workshop jobs. Always follow the manufacturer’s manual for your machine.
           </SectionHeading>
@@ -201,7 +242,7 @@ export default function HomePage() {
       </section>
 
       {/* Safety */}
-      <section id="safety" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="safety-title">
+      <section id="safety" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16" aria-labelledby="safety-title">
         <SectionHeading id="safety-title" eyebrow="Laser safety" title="Eye protection and workshop safety" />
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div className="rounded-xl border border-slate-700 bg-slate-800/60 p-5">
@@ -224,8 +265,8 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-20 border-t border-slate-800 bg-slate-900/50" aria-labelledby="faq-title">
-        <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+      <section id="faq" className="scroll-mt-24 border-t border-slate-800 bg-slate-900/50" aria-labelledby="faq-title">
+        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHeading id="faq-title" eyebrow="FAQ" title="Frequently asked questions" />
           <div className="mt-8 divide-y divide-slate-700 rounded-xl border border-slate-700 bg-slate-800/40">
             {FAQ.map((item) => (
@@ -242,7 +283,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="final-title">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16" aria-labelledby="final-title">
         <div className="rounded-2xl border border-brand/40 bg-gradient-to-br from-slate-800 to-slate-900 p-8 text-center sm:p-12">
           <h2 id="final-title" className="text-2xl font-bold text-white sm:text-3xl">Ready to check specifications and pricing?</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-300">

@@ -144,6 +144,27 @@ check('Card: no order-*/reverse/absolute layout tricks', !/\border-\d|\border-(f
 const page = readFileSync(join(ROOT, 'app/page.jsx'), 'utf8');
 check('home page has no hand-built image blocks (all cards use <Card>)', !/<ProductImage/.test(page));
 
+// Logo-only header/footer, favicon, social preview, footer layout, card image box.
+{
+  const read = (p) => readFileSync(join(ROOT, p), 'utf8');
+  const logoSrc = read('components/Logo.jsx').replace(/\/\/.*$/gm, '').replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+  check('Logo renders the image only: no <span>/brand text beside it', !/<span\b/.test(logoSrc) && !/\{SITE\.brandName\}\s*</.test(logoSrc.replace(/aria-label=\{[^}]*\}/, '')));
+  for (const f of ['public/favicon.png', 'public/favicon.ico', 'public/apple-touch-icon.png']) check(`file exists: ${f}`, existsSync(join(ROOT, f)));
+  check('old placeholder icon app/icon.svg removed (no conflicting icons)', !existsSync(join(ROOT, 'app/icon.svg')));
+  const layout = read('app/layout.jsx');
+  check('layout metadata.icons points at the basePath-served favicon files', /icons:\s*\{/.test(layout) && /SITE\.favicon\.ico/.test(layout) && /SITE\.favicon\.png/.test(layout) && /SITE\.favicon\.apple/.test(layout));
+  const { OG_IMAGE } = await import(pathToFileURL(join(ROOT, 'lib/seo.js')).href);
+  check('og:image is the first featured product image (absolute https, not the logo)', OG_IMAGE.url === manifest.MODELS[0].image.src && /^https:\/\//.test(OG_IMAGE.url) && !/logo|favicon/i.test(OG_IMAGE.url));
+  const seoSrc = read('lib/seo.js');
+  check('openGraph.images and twitter.images both set from OG_IMAGE', (seoSrc.match(/images:\s*\[\{ url: OG_IMAGE\.url/g) || []).length === 2);
+  const footer = read('components/Footer.jsx');
+  check('footer: legal links right-aligned, text block max-w-xl ml-auto, left-aligned, no text-right', /justify-end/.test(footer) && /max-w-xl/.test(footer) && /md:ml-auto/.test(footer) && /text-left/.test(footer) && !/text-right/.test(footer));
+  check('footer: disclaimer, email and copyright present', /affiliate links/.test(footer) && /mailto:/.test(footer) && /©/.test(footer));
+  check('card image box: one fixed height, object-contain, no aspect-ratio box', /imageClassName = 'h-56'/.test(card) && !/aspect-/.test(card) && /object-contain/.test(read('components/ProductImage.jsx')));
+  const hero = read('app/page.jsx');
+  check('hero columns stretch to equal height', /items-stretch/.test(hero) && /lg:grid-cols-\[1\.05fr,0\.95fr\]/.test(hero));
+}
+
 const analytics = readFileSync(join(ROOT, 'components/Analytics.jsx'), 'utf8');
 check('analytics listener never calls preventDefault', !/preventDefault/.test(analytics));
 

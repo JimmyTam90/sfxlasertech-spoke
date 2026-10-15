@@ -51,7 +51,7 @@ The supplied configuration was a bare fragment; it is wrapped in a `rewrites` ar
 - **Confirmed inputs:** all of Section 1 was used as supplied. Affiliate URLs match the owner's authoritative mapping (checked by `audit:affiliate`).
 - **Missing inputs:** GA4 ID, Google Ads ID/label, Meta Pixel ID are placeholders, so those integrations are off.
 - **Conflicts / issues recorded:**
-  1. The official PrimeGearLab logo is `public/logo.png` (served at `/sfx-laser-tech/logo.png` through `basePath`; do not nest it in `public/sfx-laser-tech/`). It is the supplied artwork with the empty transparent margin cropped and scaled to 400 px wide. The untouched original is kept at `brand/logo-original.png`. `BRAND_LOGO_URL` in the input is the **merchant's** logo and is not used.
+  1. The official PrimeGearLab logo is `public/logo.png`, shown **alone** in the header and footer (the artwork already contains the brand name). It is served at `/sfx-laser-tech/logo.png` through `basePath`; do not nest it in `public/sfx-laser-tech/` (Next.js would then serve it at a doubled path). The supplied file had a solid navy background, which was converted to transparency so it sits cleanly on the header; the untouched originals are in `brand/`. Favicon set (`favicon.ico`, `favicon.png`, `apple-touch-icon.png`) is the hexagon-and-gear emblem on the brand navy, because the full logo is unreadable at 16 to 48 px. `BRAND_LOGO_URL` in the input is the **merchant's** logo and is not used.
   2. `REPOSITORY_CONSTRAINTS` requires `tailwindcss`, `postcss`, `autoprefixer` in `dependencies`. Followed (Section 5.2 says not to force this on every project; here it is an explicit input and does no harm).
   3. Three earlier destination handles did not load; they were replaced by the authoritative mapping below.
   4. `OFFER_CANDIDATES` such as "factory-direct pricing" and "California & New York support centers" could not be verified. They are **not** stated as facts. The page only repeats what the merchant's own site states, and says so.
@@ -116,6 +116,7 @@ Notes:
 1. `https://primegearlab.com/sfx-laser-tech` returns the page with CSS and JS from `/sfx-laser-tech/_next/static/...`.
 2. `https://primegearlab.com/sfx-laser-tech/` (trailing slash) should redirect to the no-slash URL **on primegearlab.com**, not on the Spoke host. If it redirects to `sfxlasertech-spoke.vercel.app`, add a Hub-level redirect.
 3. `/sfx-laser-tech/sitemap.xml` works. Crawlers read `robots.txt` only at the Hub **root**; add `Sitemap: https://primegearlab.com/sfx-laser-tech/sitemap.xml` there.
-4. The favicon is a plain text monogram placeholder at `/sfx-laser-tech/icon.svg`.
-5. Every outbound button opens the merchant in a new tab with `?ref=hppfdpph` intact.
-6. Paid ads: per the supplied restrictions, do not bid on "SFX Laser" / "SFX Laser Tech" brand keywords if the merchant forbids it.
+4. Favicon files are served at `/sfx-laser-tech/favicon.ico` and `/sfx-laser-tech/favicon.png`. Browsers also request `https://primegearlab.com/favicon.ico` at the Hub **root**, which belongs to the Hub project, so add the same icon there.
+5. Social preview: every page sets `og:image` and `twitter:image` to the first featured product photo (merchant CDN, absolute URL). After deploying, refresh the cache in the Facebook Sharing Debugger / Zalo / Telegram, which cache old previews.
+6. Every outbound button opens the merchant in a new tab with `?ref=hppfdpph` intact.
+7. Paid ads: per the supplied restrictions, do not bid on "SFX Laser" / "SFX Laser Tech" brand keywords if the merchant forbids it.

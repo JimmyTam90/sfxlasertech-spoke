@@ -13,12 +13,15 @@ import AffiliateLink from './AffiliateLink';
  *
  * Nothing (disclosure, badge, button) may be rendered before the image.
  * Extra spec markup is passed as `children` and lands inside "details", above the CTA.
+ *
+ * Every card image box has the same fixed height (h-56 by default) with object-contain, so wide
+ * photos (e.g. tool holders) are never squashed and all cards in a row line up.
  */
-export default function Card({ item, placement, priority = false, headingLevel = 'h3', sizes, children }) {
+export default function Card({ item, placement, priority = false, headingLevel = 'h3', sizes, imageClassName = 'h-56', children }) {
   const Heading = headingLevel;
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-slate-700 bg-slate-800/60">
-      <div data-card-slot="image" className="relative aspect-[4/3] w-full bg-white">
+    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-700 bg-slate-800/60">
+      <div data-card-slot="image" className={`relative w-full shrink-0 bg-white ${imageClassName}`}>
         <ProductImage src={item.image.src} alt={item.image.alt} priority={priority} sizes={sizes} />
       </div>
 
