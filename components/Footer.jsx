@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-// Helper function chỉ dùng cho thẻ <img> hoặc tài nguyên thuần ngoài router
+// Helper function cho tài nguyên thuần ngoài router (như logo)
 const asset = (path) => {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/sfx-laser-tech';
   return `${basePath}${path.startsWith('/') ? path : `/${path}`}`;
@@ -56,10 +56,10 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Cột 2 - Hàng 1: Legal Links (Dùng Link chuẩn của Next.js App Router với basePath tự động) */}
+        {/* Cột 2 - Hàng 1: Legal Links (Đã sửa đúng tên route /privacy-policy và /terms-of-service) */}
         <div className="footer-links">
-          <Link href="/privacy" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Privacy Policy</Link>
-          <Link href="/terms" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Terms of Service</Link>
+          <Link href="/privacy-policy" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Privacy Policy</Link>
+          <Link href="/terms-of-service" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Terms of Service</Link>
           <Link href="/affiliate-disclosure" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Affiliate Disclosure</Link>
           <Link href="/contact" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Contact</Link>
         </div>
