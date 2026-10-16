@@ -46,9 +46,14 @@ export default function Footer() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
             <img 
-              src={asset('/logo-trimmed.png')} 
-              alt="SFX Laser Tech" 
-              style={{ height: '40px', width: 'auto', objectFit: 'contain' }} 
+              src={asset('/logo.png')} 
+              alt="PrimeGearLab" 
+              style={{ height: '42px', width: 'auto', objectFit: 'contain' }} 
+              onError={(e) => {
+                // Fallback phòng trường hợp logo nằm trong thư mục images
+                e.target.onerror = null;
+                e.target.src = asset('/images/logo.png');
+              }}
             />
           </div>
           <p style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '220px', lineHeight: '1.4', margin: 0 }}>
