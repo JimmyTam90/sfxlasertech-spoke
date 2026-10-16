@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-// Helper function to resolve subpath correctly for Hub-Spoke
+// Helper function chỉ dùng cho thẻ <img> hoặc tài nguyên thuần ngoài router
 const asset = (path) => {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/sfx-laser-tech';
   return `${basePath}${path.startsWith('/') ? path : `/${path}`}`;
@@ -56,12 +56,12 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Cột 2 - Hàng 1: Legal Links (Đã tự động nối subpath chuẩn xác) */}
+        {/* Cột 2 - Hàng 1: Legal Links (Dùng Link chuẩn của Next.js App Router với basePath tự động) */}
         <div className="footer-links">
-          <Link href={asset('/privacy')} style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Privacy Policy</Link>
-          <Link href={asset('/terms')} style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Terms of Service</Link>
-          <Link href={asset('/affiliate-disclosure')} style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Affiliate Disclosure</Link>
-          <Link href={asset('/contact')} style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Contact</Link>
+          <Link href="/privacy" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Privacy Policy</Link>
+          <Link href="/terms" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Terms of Service</Link>
+          <Link href="/affiliate-disclosure" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Affiliate Disclosure</Link>
+          <Link href="/contact" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Contact</Link>
         </div>
 
         {/* Cột 2 - Hàng 2: Text Block & Disclaimers */}
