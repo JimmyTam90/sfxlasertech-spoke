@@ -49,11 +49,6 @@ export default function Footer() {
               src={asset('/logo.png')} 
               alt="PrimeGearLab" 
               style={{ height: '42px', width: 'auto', objectFit: 'contain' }} 
-              onError={(e) => {
-                // Fallback phòng trường hợp logo nằm trong thư mục images
-                e.target.onerror = null;
-                e.target.src = asset('/images/logo.png');
-              }}
             />
           </div>
           <p style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '220px', lineHeight: '1.4', margin: 0 }}>
@@ -69,7 +64,7 @@ export default function Footer() {
           <Link href="/contact" style={{ color: '#e2e8f0', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Contact</Link>
         </div>
 
-        {/* Cột 2 - Hàng 2: Text Block & Disclaimers (Tràn đều tự nhiên, lấp đầy khoảng trắng) */}
+        {/* Cột 2 - Hàng 2: Text Block & Disclaimers */}
         <div style={{ width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.83rem', lineHeight: '1.5', color: '#94a3b8', textAlign: 'left' }}>
           <p style={{ margin: 0 }}>
             PrimeGearLab is an independent guide to industrial laser equipment. We are not the manufacturer or the seller. Purchases happen on the merchant’s own website.
